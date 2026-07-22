@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local configuration and secrets
+.env
+.env.*
+secrets.yaml
+known_devices.yaml
+
+# IDE/editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Codex/local agent state
+.agents/
+.codex/
+
+# Local-only files for this workspace
+esysunhome-main/
+test_esy_connection.py
+main.py
+ESY.md
+
+# OS files
+.DS_Store
+Thumbs.db
+

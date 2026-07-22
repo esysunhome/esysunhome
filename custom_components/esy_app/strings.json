@@ -1,0 +1,67 @@
+﻿{
+  "title": "ESY App",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect ESY App",
+        "description": "Enter your ESY Java API address and account credentials. After login, choose one bound device by SN.",
+        "data": {
+          "name": "Name",
+          "base_url": "API base URL",
+          "username": "Username",
+          "password": "Password"
+        }
+      },
+      "device": {
+        "title": "Choose Device",
+        "description": "Select the device SN to add to Home Assistant.",
+        "data": {
+          "device": "Device"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to ESY API or the credentials are invalid.",
+      "no_devices": "No bound devices were returned for this account.",
+      "device_not_found": "The selected device was not found."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "device_status": {"name": "Device status"},
+      "online_status": {"name": "Online status"},
+      "battery_status": {"name": "Battery status"},
+      "switch_status": {"name": "Switch status"},
+      "operation_status": {"name": "Operation status"},
+      "fault_code": {"name": "Fault code"},
+      "mode_code": {"name": "Mode code"},
+      "mode_description": {"name": "Mode description"},
+      "energy_flow_switch": {"name": "Energy flow switch"},
+      "battery_soc": {"name": "Battery SOC"},
+      "soc_lower_limit": {"name": "SOC lower limit"},
+      "pv_power": {"name": "PV power"},
+      "load_power": {"name": "Load power"},
+      "grid_voltage_l1": {"name": "Grid voltage L1"},
+      "grid_voltage_l2": {"name": "Grid voltage L2"},
+      "grid_voltage_l3": {"name": "Grid voltage L3"},
+      "grid_current_l1": {"name": "Grid current L1"},
+      "grid_current_l2": {"name": "Grid current L2"},
+      "grid_current_l3": {"name": "Grid current L3"},
+      "grid_frequency": {"name": "Grid frequency"},
+      "active_power_total": {"name": "Active power total"},
+      "output_power": {"name": "Output power"},
+      "daily_energy_yield": {"name": "Daily energy yield"},
+      "total_energy_yield": {"name": "Total energy yield"},
+      "grid_import_power": {"name": "Grid import power"},
+      "grid_export_power": {"name": "Grid export power"},
+      "grid_import_energy_total": {"name": "Grid import energy total"},
+      "grid_export_energy_total": {"name": "Grid export energy total"}
+    },
+    "select": {
+      "run_mode": {"name": "Operating Mode"}
+    },
+    "switch": {
+      "api_polling": {"name": "API Polling"}
+    }
+  }
+}

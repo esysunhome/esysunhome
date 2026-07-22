@@ -1,0 +1,10 @@
+﻿{
+  "domain": "esy_app",
+  "name": "ESY App",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://developers.home-assistant.io/docs/creating_integration_file_structure/",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "0.1.0"
+}
