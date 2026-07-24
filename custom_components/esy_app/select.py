@@ -4,6 +4,7 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -33,6 +34,7 @@ class EsyRunModeSelect(CoordinatorEntity[EsyAppCoordinator], SelectEntity):
     _attr_translation_key = None
     _attr_name = "Operating Mode"
     _attr_icon = "mdi:battery-sync-outline"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator: EsyAppCoordinator, sn: str) -> None:
         super().__init__(coordinator)

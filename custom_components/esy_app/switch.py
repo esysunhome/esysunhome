@@ -5,6 +5,7 @@ from typing import Any
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -22,6 +23,7 @@ class EsyApiPollingSwitch(CoordinatorEntity[EsyAppCoordinator], SwitchEntity):
     _attr_translation_key = None
     _attr_name = "API Polling"
     _attr_icon = "mdi:reload"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator: EsyAppCoordinator, sn: str) -> None:
         super().__init__(coordinator)
