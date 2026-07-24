@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
+from inspect import isawaitable
 from pathlib import Path
 from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.components import frontend, websocket_api
+from homeassistant.components import frontend, panel_custom, websocket_api
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -26,6 +27,8 @@ from .coordinator import EsyAppCoordinator
 
 PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SELECT, Platform.SWITCH]
 CARD_URL = "/esy_app_static/esy-power-chart-card.js"
+PANEL_MODULE_URL = "/esy_app_static/esy-power-panel.js"
+PANEL_URL_PATH = "esy-power"
 STATIC_PATH = Path(__file__).parent / "www"
 
 
@@ -45,6 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     await _register_static_path(hass)
     _register_websocket_api(hass)
+    await _register_panel(hass)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
@@ -82,12 +86,50 @@ async def _register_static_path(hass: HomeAssistant) -> None:
     hass.data[DOMAIN]["static_registered"] = True
 
 
+async def _register_panel(hass: HomeAssistant) -> None:
+    if hass.data.setdefault(DOMAIN, {}).get("panel_registered"):
+        return
+
+    result = panel_custom.async_register_panel(
+        hass,
+        frontend_url_path=PANEL_URL_PATH,
+        webcomponent_name="esy-power-panel",
+        sidebar_title="ESY Power",
+        sidebar_icon="mdi:chart-line",
+        module_url=PANEL_MODULE_URL,
+        require_admin=False,
+        config={"title": "ESY Power"},
+    )
+    if isawaitable(result):
+        await result
+    hass.data[DOMAIN]["panel_registered"] = True
+
 def _register_websocket_api(hass: HomeAssistant) -> None:
     if hass.data.setdefault(DOMAIN, {}).get("websocket_registered"):
         return
+    websocket_api.async_register_command(hass, websocket_devices)
     websocket_api.async_register_command(hass, websocket_power_data)
     hass.data[DOMAIN]["websocket_registered"] = True
 
+
+@websocket_api.websocket_command({vol.Required("type"): "esy_app/devices"})
+@websocket_api.async_response
+async def websocket_devices(hass: HomeAssistant, connection, msg: dict[str, Any]) -> None:
+    entries: list[dict[str, Any]] = []
+    for entry in hass.config_entries.async_entries(DOMAIN):
+        coordinator = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+        devices = []
+        if isinstance(coordinator, EsyAppCoordinator):
+            for device in coordinator.devices:
+                devices.append(
+                    {
+                        "sn": device.get("sn"),
+                        "device_id": device.get("device_id"),
+                        "name": device.get("name") or device.get("sn"),
+                    }
+                )
+        entries.append({"entry_id": entry.entry_id, "title": entry.title, "devices": devices})
+    connection.send_result(msg["id"], {"entries": entries})
 
 @websocket_api.websocket_command(
     {
