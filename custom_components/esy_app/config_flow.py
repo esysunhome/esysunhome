@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Any
 
@@ -16,6 +16,7 @@ from .const import (
     CONF_DEVICE_SNS,
     CONF_PASSWORD,
     CONF_TOKEN,
+    CONF_SHOW_POWER_PAGE,
     CONF_USERNAME,
     DEFAULT_NAME,
     DOMAIN,
@@ -33,6 +34,7 @@ class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._username = ""
         self._password = ""
         self._token = ""
+        self._show_power_page = True
         self._client: EsyAppApiClient | None = None
         self._devices: list[dict[str, str]] = []
 
@@ -58,10 +60,7 @@ class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._devices = _parse_device_records(raw_devices)
                 if not self._devices:
                     errors["base"] = "no_devices"
-                elif len(self._devices) == 1:
-                    return await self._create_entry(self._devices[0])
-                else:
-                    return await self.async_step_device()
+                return await self.async_step_device()
             except EsyAppApiError:
                 errors["base"] = "cannot_connect"
 
@@ -82,15 +81,21 @@ class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             selected_sn = user_input["device"]
+            self._show_power_page = user_input.get(CONF_SHOW_POWER_PAGE, True)
             for device in self._devices:
                 if device["sn"] == selected_sn:
                     return await self._create_entry(device)
             errors["base"] = "device_not_found"
 
         options = {device["sn"]: _device_label(device) for device in self._devices}
+        default_device = self._devices[0]["sn"] if self._devices else None
+        schema = {
+            vol.Required("device", default=default_device): vol.In(options),
+            vol.Optional(CONF_SHOW_POWER_PAGE, default=True): bool,
+        }
         return self.async_show_form(
             step_id="device",
-            data_schema=vol.Schema({vol.Required("device"): vol.In(options)}),
+            data_schema=vol.Schema(schema),
             errors=errors,
         )
 
@@ -109,6 +114,7 @@ class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_TOKEN: self._token,
                 CONF_DEVICES: devices,
                 CONF_DEVICE_SNS: [device["sn"]],
+                CONF_SHOW_POWER_PAGE: self._show_power_page,
             },
         )
 

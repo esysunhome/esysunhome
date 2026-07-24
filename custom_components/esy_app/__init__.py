@@ -20,6 +20,7 @@ from .const import (
     CONF_DEVICE_SNS,
     CONF_PASSWORD,
     CONF_TOKEN,
+    CONF_SHOW_POWER_PAGE,
     CONF_USERNAME,
     DOMAIN,
 )
@@ -48,7 +49,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     await _register_static_path(hass)
     _register_websocket_api(hass)
-    await _register_panel(hass)
+    if _should_register_power_panel(hass):
+        await _register_panel(hass)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
@@ -86,6 +88,12 @@ async def _register_static_path(hass: HomeAssistant) -> None:
     hass.data[DOMAIN]["static_registered"] = True
 
 
+def _should_register_power_panel(hass: HomeAssistant) -> bool:
+    return any(
+        entry.data.get(CONF_SHOW_POWER_PAGE, True)
+        for entry in hass.config_entries.async_entries(DOMAIN)
+    )
+
 async def _register_panel(hass: HomeAssistant) -> None:
     if hass.data.setdefault(DOMAIN, {}).get("panel_registered"):
         return
@@ -122,6 +130,8 @@ def _register_websocket_api(hass: HomeAssistant) -> None:
 async def websocket_devices(hass: HomeAssistant, connection, msg: dict[str, Any]) -> None:
     entries: list[dict[str, Any]] = []
     for entry in hass.config_entries.async_entries(DOMAIN):
+        if not entry.data.get(CONF_SHOW_POWER_PAGE, True):
+            continue
         coordinator = hass.data.get(DOMAIN, {}).get(entry.entry_id)
         devices = []
         if isinstance(coordinator, EsyAppCoordinator):

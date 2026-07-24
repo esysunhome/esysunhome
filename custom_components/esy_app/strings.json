@@ -1,4 +1,4 @@
-﻿{
+{
   "title": "ESY App",
   "config": {
     "step": {
@@ -14,9 +14,10 @@
       },
       "device": {
         "title": "Choose Device",
-        "description": "Select the device SN to add to Home Assistant.",
+        "description": "Select the device SN to add and choose whether to show the automatic ESY Power chart page.",
         "data": {
-          "device": "Device"
+          "device": "Device",
+          "show_power_page": "Show ESY Power chart page"
         }
       }
     },
@@ -28,40 +29,109 @@
   },
   "entity": {
     "sensor": {
-      "device_status": {"name": "Device status"},
-      "online_status": {"name": "Online status"},
-      "battery_status": {"name": "Battery status"},
-      "switch_status": {"name": "Switch status"},
-      "operation_status": {"name": "Operation status"},
-      "fault_code": {"name": "Fault code"},
-      "mode_code": {"name": "Mode code"},
-      "mode_description": {"name": "Mode description"},
-      "energy_flow_switch": {"name": "Energy flow switch"},
-      "battery_soc": {"name": "Battery SOC"},
-      "soc_lower_limit": {"name": "SOC lower limit"},
-      "pv_power": {"name": "PV power"},
-      "load_power": {"name": "Load power"},
-      "grid_voltage_l1": {"name": "Grid voltage L1"},
-      "grid_voltage_l2": {"name": "Grid voltage L2"},
-      "grid_voltage_l3": {"name": "Grid voltage L3"},
-      "grid_current_l1": {"name": "Grid current L1"},
-      "grid_current_l2": {"name": "Grid current L2"},
-      "grid_current_l3": {"name": "Grid current L3"},
-      "grid_frequency": {"name": "Grid frequency"},
-      "active_power_total": {"name": "Active power total"},
-      "output_power": {"name": "Output power"},
-      "daily_energy_yield": {"name": "Daily energy yield"},
-      "total_energy_yield": {"name": "Total energy yield"},
-      "grid_import_power": {"name": "Grid import power"},
-      "grid_export_power": {"name": "Grid export power"},
-      "grid_import_energy_total": {"name": "Grid import energy total"},
-      "grid_export_energy_total": {"name": "Grid export energy total"}
+      "device_status": {
+        "name": "Device Status"
+      },
+      "online_status": {
+        "name": "Grid Connected"
+      },
+      "battery_status": {
+        "name": "Battery Status"
+      },
+      "switch_status": {
+        "name": "Battery Active"
+      },
+      "operation_status": {
+        "name": "Operation Status"
+      },
+      "fault_code": {
+        "name": "Fault Code"
+      },
+      "mode_code": {
+        "name": "Base Operating Mode Code"
+      },
+      "mode_description": {
+        "name": "Base Operating Mode"
+      },
+      "energy_flow_switch": {
+        "name": "Energy Flow Switch"
+      },
+      "battery_soc": {
+        "name": "Battery State of Charge"
+      },
+      "pv_power": {
+        "name": "PV Power"
+      },
+      "load_power": {
+        "name": "Load Power"
+      },
+      "grid_power": {
+        "name": "Grid Power"
+      },
+      "output_power": {
+        "name": "Output Power"
+      },
+      "grid_import_power": {
+        "name": "Grid Import Power"
+      },
+      "grid_export_power": {
+        "name": "Grid Export Power"
+      },
+      "grid_voltage_l1": {
+        "name": "Grid Voltage L1"
+      },
+      "grid_voltage_l2": {
+        "name": "Grid Voltage L2"
+      },
+      "grid_voltage_l3": {
+        "name": "Grid Voltage L3"
+      },
+      "grid_current_l1": {
+        "name": "Grid Current L1"
+      },
+      "grid_current_l2": {
+        "name": "Grid Current L2"
+      },
+      "grid_current_l3": {
+        "name": "Grid Current L3"
+      },
+      "grid_frequency": {
+        "name": "Grid Frequency"
+      },
+      "daily_generation": {
+        "name": "Daily Generation"
+      },
+      "daily_pv_generation": {
+        "name": "Daily PV Generation"
+      },
+      "daily_grid_import": {
+        "name": "Daily Grid Import"
+      },
+      "daily_grid_export": {
+        "name": "Daily Grid Export"
+      },
+      "total_generation": {
+        "name": "Total Generation"
+      },
+      "total_grid_import": {
+        "name": "Total Grid Import"
+      },
+      "total_grid_export": {
+        "name": "Total Grid Export"
+      },
+      "total_consumption": {
+        "name": "Total Consumption"
+      }
     },
     "select": {
-      "run_mode": {"name": "Operating Mode"}
+      "run_mode": {
+        "name": "Operating Mode"
+      }
     },
     "switch": {
-      "api_polling": {"name": "API Polling"}
+      "api_polling": {
+        "name": "API Polling"
+      }
     }
   }
 }
