@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import logging
 from typing import Any
@@ -120,7 +120,7 @@ class EsyAppApiClient:
         *,
         params: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
-    ) -> dict[str, Any] | list[Any]:
+    ) -> Any:
         if not self._token:
             await self.login()
 
@@ -140,7 +140,7 @@ class EsyAppApiClient:
         *,
         params: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
-    ) -> dict[str, Any] | list[Any]:
+    ) -> Any:
         url = f"{self._base_url}{path}"
         headers = {"Authorization": f"Bearer {self._token}"}
         return await self._send_request(method, url, headers=headers, params=params, json=json)
@@ -151,7 +151,7 @@ class EsyAppApiClient:
         path: str,
         *,
         json: dict[str, Any] | None = None,
-    ) -> dict[str, Any] | list[Any]:
+    ) -> Any:
         url = f"{self._base_url}{path}"
         return await self._send_request(method, url, json=json)
 
@@ -163,7 +163,7 @@ class EsyAppApiClient:
         headers: dict[str, str] | None = None,
         params: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
-    ) -> dict[str, Any] | list[Any]:
+    ) -> Any:
         try:
             async with self._session.request(
                 method,
@@ -190,8 +190,6 @@ class EsyAppApiClient:
         data = payload.get("data")
         if data is None:
             return payload
-        if not isinstance(data, (dict, list)):
-            raise EsyAppApiError("Response data is invalid")
         return data
 
     @staticmethod

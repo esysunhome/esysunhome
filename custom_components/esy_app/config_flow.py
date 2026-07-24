@@ -91,7 +91,7 @@ class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         default_device = self._devices[0]["sn"] if self._devices else None
         schema = {
             vol.Required("device", default=default_device): vol.In(options),
-            vol.Optional(CONF_SHOW_POWER_PAGE, default=True): bool,
+            vol.Optional(CONF_SHOW_POWER_PAGE, default=self._show_power_page): bool,
         }
         return self.async_show_form(
             step_id="device",
