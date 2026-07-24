@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
@@ -43,7 +43,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
-    _register_static_path(hass)
+    await _register_static_path(hass)
     _register_websocket_api(hass)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
@@ -56,10 +56,29 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 
-def _register_static_path(hass: HomeAssistant) -> None:
+async def _register_static_path(hass: HomeAssistant) -> None:
     if hass.data.setdefault(DOMAIN, {}).get("static_registered"):
         return
-    hass.http.register_static_path("/esy_app_static", str(STATIC_PATH), cache_headers=False)
+
+    if hasattr(hass.http, "async_register_static_paths"):
+        from homeassistant.components.http import StaticPathConfig
+
+        await hass.http.async_register_static_paths(
+            [
+                StaticPathConfig(
+                    "/esy_app_static",
+                    str(STATIC_PATH),
+                    False,
+                )
+            ]
+        )
+    else:
+        hass.http.register_static_path(
+            "/esy_app_static",
+            str(STATIC_PATH),
+            cache_headers=False,
+        )
+
     hass.data[DOMAIN]["static_registered"] = True
 
 
