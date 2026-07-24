@@ -90,18 +90,23 @@ async def _register_panel(hass: HomeAssistant) -> None:
     if hass.data.setdefault(DOMAIN, {}).get("panel_registered"):
         return
 
-    result = panel_custom.async_register_panel(
-        hass,
-        frontend_url_path=PANEL_URL_PATH,
-        webcomponent_name="esy-power-panel",
-        sidebar_title="ESY Power",
-        sidebar_icon="mdi:chart-line",
-        module_url=PANEL_MODULE_URL,
-        require_admin=False,
-        config={"title": "ESY Power"},
-    )
-    if isawaitable(result):
-        await result
+    try:
+        result = panel_custom.async_register_panel(
+            hass,
+            frontend_url_path=PANEL_URL_PATH,
+            webcomponent_name="esy-power-panel",
+            sidebar_title="ESY Power",
+            sidebar_icon="mdi:chart-line",
+            module_url=PANEL_MODULE_URL,
+            require_admin=False,
+            config={"title": "ESY Power"},
+        )
+        if isawaitable(result):
+            await result
+    except ValueError as err:
+        if f"Overwriting panel {PANEL_URL_PATH}" not in str(err):
+            raise
+
     hass.data[DOMAIN]["panel_registered"] = True
 
 def _register_websocket_api(hass: HomeAssistant) -> None:
