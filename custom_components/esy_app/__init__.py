@@ -25,7 +25,7 @@ from .const import (
 )
 from .coordinator import EsyAppCoordinator
 
-PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SELECT, Platform.SWITCH]
+PLATFORMS: list[Platform] = [Platform.SELECT, Platform.SWITCH, Platform.SENSOR]
 CARD_URL = "/esy_app_static/esy-power-chart-card.js"
 PANEL_MODULE_URL = "/esy_app_static/esy-power-panel.js"
 PANEL_URL_PATH = "esy-power"
