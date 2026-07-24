@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
@@ -30,7 +30,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
 class EsyRunModeSelect(CoordinatorEntity[EsyAppCoordinator], SelectEntity):
     _attr_has_entity_name = True
-    _attr_translation_key = "run_mode"
+    _attr_translation_key = None
+    _attr_name = "Operating Mode"
     _attr_icon = "mdi:battery-sync-outline"
 
     def __init__(self, coordinator: EsyAppCoordinator, sn: str) -> None:

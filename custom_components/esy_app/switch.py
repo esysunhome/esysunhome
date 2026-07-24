@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Any
 
@@ -19,7 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
 class EsyApiPollingSwitch(CoordinatorEntity[EsyAppCoordinator], SwitchEntity):
     _attr_has_entity_name = True
-    _attr_translation_key = "api_polling"
+    _attr_translation_key = None
     _attr_name = "API Polling"
     _attr_icon = "mdi:reload"
 
