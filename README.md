@@ -1,87 +1,124 @@
-# ESY App
+# esysunhome
 
-Home Assistant custom integration for ESY devices through an ESY Java backend API.
+esysunhome is a Home Assistant custom integration for ESY energy devices. It lets you add your ESY device to Home Assistant, view device data, switch supported operating modes, and optionally view a daily power chart.
 
 ## Features
 
-- Login with ESY account username and password.
-- Select a bound device SN after login.
-- View device status, battery SOC, power, voltage, current, and energy sensors.
-- Switch operating mode using `/api/lsypattern/page` and `/api/lsypattern/switch`.
-- Enable or disable API polling from the Home Assistant device controls.
-- Optional Lovelace daily power chart card for `/api/lsydevicepowerdata/list`.
+- Sign in with your ESY account username and password.
+- Select a bound device during setup.
+- View battery, solar, grid, load, voltage, current, frequency, status, and energy sensors.
+- Switch supported operating modes from Home Assistant.
+- Enable or disable polling from the device controls.
+- View a daily power chart with date selection.
 
-## Installation
+## Installation With HACS
 
-Copy this folder into your Home Assistant config directory:
+1. Open Home Assistant.
+2. Go to **HACS**.
+3. Open the menu in the top-right corner and choose **Custom repositories**.
+4. Add this repository URL:
 
-```text
-custom_components/esy_app
-```
+   ```text
+   https://github.com/esysunhome/esysunhome
+   ```
 
-Then restart Home Assistant and add **ESY App** from:
+5. Select **Integration** as the category.
+6. Click **Add**.
+7. Open **esysunhome** in HACS and click **Download**.
+8. Restart Home Assistant.
 
-```text
-Settings > Devices & services > Add integration
-```
+## Manual Installation
 
-## Configuration
+1. Copy this folder into your Home Assistant configuration directory:
 
-During setup, enter:
+   ```text
+   custom_components/esy_app
+   ```
 
-- API base URL, for example `http://120.79.138.205:7073`
-- ESY account username
-- ESY account password
+2. Restart Home Assistant.
 
-After login, the integration loads devices from:
-
-```text
-GET /api/lsydevice/page
-```
-
-Choose the device SN you want to add.
-
-## Daily Power Chart Card
-
-The integration includes a Lovelace custom card:
+The final path in Home Assistant should be:
 
 ```text
-/esy_app_static/esy-power-chart-card.js
+/config/custom_components/esy_app
 ```
 
-Add it as a JavaScript module resource in Home Assistant, then use:
+## Add The Integration
 
-```yaml
-type: custom:esy-power-chart-card
-title: ESY Daily Power
-device_id: "2018602632859529217"
-```
+1. In Home Assistant, go to **Settings > Devices & services**.
+2. Click **Add integration**.
+3. Search for **esysunhome**.
+4. Enter the required setup information:
+   - **Name**: a display name for this integration.
+   - **Username**: your ESY account username.
+   - **Password**: your ESY account password.
+5. Submit the form.
+6. Select the device you want to add.
+7. Choose whether to show the ESY Power page if the option is displayed.
+8. Submit to finish setup.
 
-The card lets you select a date and charts:
+## Using The Integration
 
-- PV power
-- Load power
-- Battery power
-- Feed to grid
-- Buy from grid
-- Battery SOC
+After setup, Home Assistant creates a device for the selected ESY unit. Open it from **Settings > Devices & services > esysunhome**.
 
-## Backend Endpoints
+You can use the device page to:
 
-This integration currently uses:
+- Check current battery state of charge.
+- View solar, grid, load, and battery power values.
+- View voltage, current, frequency, and energy totals.
+- Enable or disable data polling.
+- Change the operating mode from the **Operating Mode** select entity.
 
-```text
-POST /login?grant_type=app
-POST /admin/login
-GET  /api/lsydevice/page
-GET  /api/smart/home/device
-GET  /api/lsydevice/info
-GET  /api/lsypattern/page
-POST /api/lsypattern/switch
-GET  /api/lsydevicepowerdata/list
-```
+Only operating modes supported by the connected ESY device are shown.
 
-## Development Notes
+## Daily Power Chart
 
-Local test scripts and reference code are intentionally not part of the published integration.
+If the ESY Power page is enabled during setup, Home Assistant adds an **ESY Power** item to the sidebar. Open it to view daily power data.
 
+The page lets you:
+
+- Select a date.
+- Refresh the chart.
+- View PV power, load power, battery power, grid feed, grid purchase, and battery SOC.
+- Hover over the chart to inspect values at a specific time.
+
+## Optional Lovelace Card
+
+The integration also includes a custom Lovelace card. This is optional because the ESY Power sidebar page can show the chart automatically.
+
+To add the card manually:
+
+1. Go to **Settings > Dashboards > Resources**.
+2. Add this resource:
+
+   ```text
+   /esy_app_static/esy-power-chart-card.js
+   ```
+
+3. Set the resource type to **JavaScript module**.
+4. Add a manual card to your dashboard:
+
+   ```yaml
+   type: custom:esy-power-chart-card
+   title: ESY Daily Power
+   device_id: "your_device_id"
+   ```
+
+Use the device ID from your esysunhome device configuration.
+
+## Troubleshooting
+
+- If the integration does not appear after installation, restart Home Assistant.
+- If login fails, check your username and password.
+- If no device is listed, make sure your ESY account is already bound to a device.
+- If mode switching fails, refresh the device page and confirm the device is online.
+- If the chart does not load, confirm the selected device supports daily power data.
+
+## Updating
+
+When updating through HACS:
+
+1. Open **HACS**.
+2. Open **esysunhome**.
+3. Click **Update** or **Redownload**.
+4. Restart Home Assistant.

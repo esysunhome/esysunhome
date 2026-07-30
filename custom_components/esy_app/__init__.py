@@ -15,13 +15,13 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import EsyAppApiClient
 from .const import (
-    CONF_BASE_URL,
     CONF_DEVICES,
     CONF_DEVICE_SNS,
     CONF_PASSWORD,
     CONF_TOKEN,
     CONF_SHOW_POWER_PAGE,
     CONF_USERNAME,
+    DEFAULT_BASE_URL,
     DOMAIN,
 )
 from .coordinator import EsyAppCoordinator
@@ -37,7 +37,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_get_clientsession(hass)
     client = EsyAppApiClient(
         session,
-        entry.data[CONF_BASE_URL],
+        DEFAULT_BASE_URL,
         entry.data.get(CONF_TOKEN),
         entry.data.get(CONF_USERNAME),
         entry.data.get(CONF_PASSWORD),
@@ -166,7 +166,7 @@ async def websocket_power_data(hass: HomeAssistant, connection, msg: dict[str, A
 
     coordinator = _coordinator_for_message(hass, msg)
     if coordinator is None:
-        connection.send_error(msg["id"], "entry_not_found", "ESY App config entry was not found")
+        connection.send_error(msg["id"], "entry_not_found", "esysunhome config entry was not found")
         return
 
     try:

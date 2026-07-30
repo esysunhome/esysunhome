@@ -66,7 +66,7 @@ class EsyPowerPanel extends HTMLElement {
           device_id: String(device.device_id),
           sn: device.sn || "",
           name: device.name || device.sn || String(device.device_id),
-          entry_title: entry.title || "ESY App",
+          entry_title: entry.title || "esysunhome",
         });
       }
     }

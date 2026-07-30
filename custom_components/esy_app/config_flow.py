@@ -19,18 +19,19 @@ from .const import (
     CONF_SHOW_POWER_PAGE,
     CONF_USERNAME,
     DEFAULT_NAME,
+    DEFAULT_BASE_URL,
     DOMAIN,
 )
 
 
 class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle an ESY App config flow."""
+    """Handle an esysunhome config flow."""
 
     VERSION = 1
 
     def __init__(self) -> None:
         self._name = DEFAULT_NAME
-        self._base_url = ""
+        self._base_url = DEFAULT_BASE_URL
         self._username = ""
         self._password = ""
         self._token = ""
@@ -43,7 +44,7 @@ class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             self._name = user_input.get(CONF_NAME) or DEFAULT_NAME
-            self._base_url = user_input[CONF_BASE_URL].rstrip("/")
+            self._base_url = DEFAULT_BASE_URL
             self._username = user_input[CONF_USERNAME].strip()
             self._password = user_input[CONF_PASSWORD]
 
@@ -67,7 +68,6 @@ class EsyAppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         schema = vol.Schema(
             {
                 vol.Optional(CONF_NAME, default=DEFAULT_NAME): str,
-                vol.Required(CONF_BASE_URL, default="https://your-api.example.com"): str,
                 vol.Required(CONF_USERNAME): str,
                 vol.Required(CONF_PASSWORD): selector.TextSelector(
                     selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)

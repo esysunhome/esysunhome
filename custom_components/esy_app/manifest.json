@@ -1,6 +1,6 @@
 {
   "domain": "esy_app",
-  "name": "ESY App",
+  "name": "esysunhome",
   "codeowners": [],
   "config_flow": true,
   "documentation": "https://github.com/esysunhome/esysunhome",
