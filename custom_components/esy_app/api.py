@@ -13,7 +13,7 @@ class EsyAppApiError(Exception):
 
 
 class EsyAppApiClient:
-    """Async client for the ESY Java backend."""
+    """Async client for the esysunhome service."""
 
     def __init__(
         self,
