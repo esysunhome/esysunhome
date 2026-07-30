@@ -12,6 +12,23 @@ from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+MODE_PATTERN_LIMIT = 5
+
+
+MODE_LABELS_BY_CODE: dict[str, str] = {
+    "1": "Regular Mode",
+    "2": "Emergency Mode",
+    "3": "Electricity Sale Mode",
+    "4": "AI Mode",
+    "5": "Battery Energy Management",
+    "6": "Battery Priority Mode",
+    "7": "Grid Priority Mode",
+    "8": "AC Charging Off Emergency Backup Mode",
+    "9": "Pure PV Mode",
+    "10": "Forced Off-Grid Mode",
+    "12": "Negative Electricity Price Mode",
+    "13": "Vacation Mode",
+}
 
 class EsyAppCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
     """Fetch ESY device data for all configured devices."""
@@ -97,9 +114,9 @@ def _extract_pattern_records(payload: Any) -> list[dict[str, Any]]:
 
 def _build_mode_options(records: list[dict[str, Any]]) -> dict[str, int | str]:
     options: dict[str, int | str] = {}
-    for record in records:
+    for record in records[:MODE_PATTERN_LIMIT]:
         code = _first_present(record, ("code", "modeCode", "patternCode", "value", "id"))
-        name = _first_present(record, ("name", "patternName", "modeName", "title", "label", "description", "desc"))
+        name = MODE_LABELS_BY_CODE.get(str(code)) or _first_present(record, ("name", "patternName", "modeName", "title", "label", "description", "desc"))
         if code is None or name is None:
             continue
         options[str(name)] = code
@@ -112,3 +129,4 @@ def _first_present(data: dict[str, Any], keys: tuple[str, ...]) -> Any:
         if value not in (None, ""):
             return value
     return None
+
