@@ -150,7 +150,8 @@ async def websocket_devices(hass: HomeAssistant, connection, msg: dict[str, Any]
     {
         vol.Required("type"): "esy_app/power_data",
         vol.Optional("entry_id"): str,
-        vol.Required("device_id"): str,
+        vol.Optional("device_id"): str,
+        vol.Optional("sn"): str,
         vol.Required("date"): str,
     }
 )
@@ -169,8 +170,16 @@ async def websocket_power_data(hass: HomeAssistant, connection, msg: dict[str, A
         connection.send_error(msg["id"], "entry_not_found", "esysunhome config entry was not found")
         return
 
+    device_id = msg.get("device_id")
+    sn = msg.get("sn")
+    if sn:
+        device_id = coordinator.device_id_for_sn(sn)
+    if not device_id:
+        connection.send_error(msg["id"], "device_not_found", "Device SN was not found or has no device id")
+        return
+
     try:
-        rows = await coordinator.client.get_power_data(msg["device_id"], date)
+        rows = await coordinator.client.get_power_data(device_id, date)
     except Exception as err:  # noqa: BLE001 - send concise error to frontend
         connection.send_error(msg["id"], "request_failed", str(err))
         return
@@ -184,8 +193,14 @@ def _coordinator_for_message(hass: HomeAssistant, msg: dict[str, Any]) -> EsyApp
     if entry_id:
         coordinator = domain_data.get(entry_id)
         return coordinator if isinstance(coordinator, EsyAppCoordinator) else None
+
+    sn = msg.get("sn")
+    if sn:
+        for value in domain_data.values():
+            if isinstance(value, EsyAppCoordinator) and sn in value.sns:
+                return value
+
     for value in domain_data.values():
         if isinstance(value, EsyAppCoordinator):
             return value
     return None
-

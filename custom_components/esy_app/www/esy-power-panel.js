@@ -199,7 +199,7 @@ class EsyPowerPanel extends HTMLElement {
   _bodyTemplate(selected) {
     if (this._loading) return `<div class="message">Loading ESY devices...</div>`;
     if (this._error) return `<div class="message error">${this._escape(this._error)}</div>`;
-    if (!selected) return `<div class="message">No ESY device with a device id is configured.</div>`;
+    if (!selected) return `<div class="message">No ESY device is configured.</div>`;
     return `<esy-power-chart-card></esy-power-chart-card>`;
   }
 
@@ -210,7 +210,7 @@ class EsyPowerPanel extends HTMLElement {
     card.setConfig({
       title: `${selected.name} Daily Power`,
       entry_id: selected.entry_id,
-      device_id: selected.device_id,
+      sn: selected.sn,
     });
     if (this._hass) card.hass = this._hass;
   }

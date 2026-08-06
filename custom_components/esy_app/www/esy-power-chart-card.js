@@ -1,4 +1,4 @@
-﻿class EsyPowerChartCard extends HTMLElement {
+class EsyPowerChartCard extends HTMLElement {
   static getConfigElement() {
     return document.createElement("esy-power-chart-card-editor");
   }
@@ -7,7 +7,7 @@
     return {
       type: "custom:esy-power-chart-card",
       title: "ESY Daily Power",
-      device_id: "",
+      sn: "",
     };
   }
 
@@ -25,8 +25,8 @@
   }
 
   setConfig(config) {
-    if (!config.device_id) {
-      throw new Error("device_id is required");
+    if (!config.sn && !config.device_id) {
+      throw new Error("sn is required");
     }
     this._config = config;
     this._date = config.date || this._date;
@@ -36,7 +36,7 @@
   set hass(hass) {
     const firstSet = !this._hass;
     this._hass = hass;
-    if (firstSet && this._config.device_id) {
+    if (firstSet && (this._config.sn || this._config.device_id)) {
       this._loadData();
     }
   }
@@ -65,7 +65,7 @@
   }
 
   async _loadData() {
-    if (!this._hass || !this._config.device_id) return;
+    if (!this._hass || (!this._config.sn && !this._config.device_id)) return;
     this._loading = true;
     this._error = "";
     this._renderStatus();
@@ -73,7 +73,8 @@
       const result = await this._hass.callWS({
         type: "esy_app/power_data",
         entry_id: this._config.entry_id,
-        device_id: String(this._config.device_id),
+        sn: this._config.sn ? String(this._config.sn) : undefined,
+        device_id: this._config.device_id ? String(this._config.device_id) : undefined,
         date: this._date,
       });
       this._rows = Array.isArray(result.rows) ? result.rows : [];

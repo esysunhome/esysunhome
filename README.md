@@ -101,10 +101,10 @@ To add the card manually:
    ```yaml
    type: custom:esy-power-chart-card
    title: ESY Daily Power
-   device_id: "your_device_id"
+   sn: "your_device_sn"
    ```
 
-Use the device ID from your esysunhome device configuration.
+Use the device SN shown in your esysunhome device list.
 
 ## Troubleshooting
 
